@@ -1,0 +1,36 @@
+# ============================================================
+# MediFlow AI — Backend (FastAPI)
+# Toutes ces dépendances sont open-source et gratuites.
+# ============================================================
+
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+pydantic-settings==2.5.2
+python-dotenv==1.0.1
+httpx==0.27.2
+python-multipart==0.0.12
+
+# Base de données / Auth (Supabase — plan gratuit, aucune carte requise)
+supabase==2.9.1
+
+# Calendrier
+google-auth==2.35.0
+google-auth-oauthlib==1.2.1
+google-api-python-client==2.149.0
+
+# BI / agrégations (insights_agent)
+pandas==2.2.3
+
+# Transcription audio — 100% local et gratuit (aucune clé API)
+faster-whisper==1.0.3
+
+# LLM gratuit — Groq (sans carte bancaire, console.groq.com/keys)
+groq==0.13.0
+
+# ---- OPTIONNEL ET PAYANT : ne pas installer si vous voulez rester 100% gratuit ----
+# anthropic==0.39.0
+# openai==1.54.0
+
+# Tests
+pytest==8.3.3

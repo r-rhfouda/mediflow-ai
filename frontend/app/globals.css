@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f7f7f4;
+  color: #161b22;
+}
+
+::selection {
+  background-color: #0e6b5c;
+  color: white;
+}
+
+/* Point de statut pulsant pour les patients "en attente" dans le plateau
+   de triage — discret, et respecte les préférences de mouvement réduit. */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.status-dot-waiting {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-dot-waiting {
+    animation: none;
+  }
+}

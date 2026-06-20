@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Build
+.next/
+out/
+dist/
+build/
+
+# Audio temporaire / fichiers de test
+*.wav
+*.mp3
+!frontend/public/**
+
+# Misc
+.DS_Store
+*.log
+.pytest_cache/
+.mypy_cache/
