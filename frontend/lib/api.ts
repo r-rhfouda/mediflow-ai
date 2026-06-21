@@ -1,6 +1,4 @@
 // Client API minimal vers le backend FastAPI.
-// TODO (équipe) : ajouter la gestion d'erreurs centralisée (toasts) et
-// l'en-tête d'authentification une fois le token Supabase branché ici.
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -18,6 +16,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const api = {
   getQueue: () => request("/queue"),
+  getQueueAlerts: () => request("/queue/alerts"),
   checkIn: (payload: { appointment_id: string; patient_id: string; motif_libre: string; urgence_declaree: boolean }) =>
     request("/queue/checkin", { method: "POST", body: JSON.stringify(payload) }),
   callPatient: (entryId: string) => request(`/queue/${entryId}/call`, { method: "PATCH" }),
@@ -32,5 +31,5 @@ export const api = {
 
   getPatientHistory: (patientId: string) => request(`/patients/${patientId}/history`),
 
-  getInsights: () => request("/admin/insights"),
+  getInsights: (period: "day" | "month" | "all" = "all") => request(`/admin/insights?period=${period}`),
 };

@@ -48,6 +48,18 @@ class QueueEntryOut(BaseModel):
     ticket_number: int
 
 
+class QueueAlertOut(BaseModel):
+    """Alerte remontée à la réception quand un patient attend depuis trop
+    longtemps — la priorisation par l'IA n'exempte pas de surveiller que
+    personne ne soit oublié, en particulier les priorités basses."""
+    entry_id: str
+    patient_id: str
+    patient_name: str
+    priority: Priority
+    wait_minutes: int
+    arrival_time: datetime
+
+
 # ---------------- Rendez-vous ----------------
 class AppointmentCreate(BaseModel):
     patient_id: str
@@ -103,3 +115,7 @@ class InsightsOut(BaseModel):
     top_medications: dict[str, int]
     priority_distribution: dict[str, int]
     no_show_rate: float
+    avg_consultation_duration_minutes: Optional[float] = None
+    ai_summary_edit_rate: float = 0.0
+    revisit_rate_30d: float = 0.0
+    hourly_distribution: dict[str, int] = Field(default_factory=dict)

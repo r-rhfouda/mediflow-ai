@@ -32,5 +32,11 @@ class Settings(BaseSettings):
     transcription_provider: str = "local"
     whisper_model_size: str = "small"
 
+    # Email (notification_agent) — SMTP gratuit, ex. Gmail + mot de passe d'application
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+
 
 settings = Settings()

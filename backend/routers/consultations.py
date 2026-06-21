@@ -14,6 +14,7 @@ from datetime import date, datetime, timezone
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from agents.anomaly_agent import check_consultation
+from agents.notification_agent import send_consultation_report
 from agents.summarization_agent import summarize_consultation
 from agents.transcription_agent import transcribe
 from db.database import get_supabase
@@ -127,4 +128,34 @@ def validate_consultation(consultation_id: str, payload: ConsultationValidateReq
             }
         ).execute()
 
-    return {"status": "validated", "alerts": alerts}
+    # Envoi du rapport par email au médecin responsable et à la réception
+    # (jamais bloquant : un échec d'envoi n'empêche pas la validation).
+    email_sent = _notify_consultation_report(sb, consultation, appointment, payload)
+
+    return {"status": "validated", "alerts": alerts, "email_sent": email_sent}
+
+
+def _notify_consultation_report(sb, consultation: dict, appointment: dict, payload: ConsultationValidateRequest) -> bool:
+    doctor_id = sb.table("appointments").select("doctor_id").eq("id", consultation["appointment_id"]).single().execute().data["doctor_id"]
+
+    doctor_profile = sb.table("profiles").select("full_name").eq("id", doctor_id).single().execute().data
+    doctor_auth = sb.auth.admin.get_user_by_id(doctor_id)
+    doctor_email = doctor_auth.user.email if doctor_auth and doctor_auth.user else ""
+
+    patient_profile = sb.table("profiles").select("full_name").eq("id", appointment["patient_id"]).single().execute().data
+
+    receptionist_row = (
+        sb.table("profiles").select("id").eq("role", "receptionist").limit(1).execute().data
+    )
+    secretary_email = ""
+    if receptionist_row:
+        secretary_auth = sb.auth.admin.get_user_by_id(receptionist_row[0]["id"])
+        secretary_email = secretary_auth.user.email if secretary_auth and secretary_auth.user else ""
+
+    return send_consultation_report(
+        patient_name=patient_profile.get("full_name", "Patient") if patient_profile else "Patient",
+        doctor_name=doctor_profile.get("full_name", "Médecin") if doctor_profile else "Médecin",
+        doctor_email=doctor_email,
+        secretary_email=secretary_email,
+        summary=payload.summary,
+    )

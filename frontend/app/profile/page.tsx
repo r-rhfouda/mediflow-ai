@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarCheck2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { CalendarCheck2, LogOut } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -10,9 +11,11 @@ import { supabase } from "@/lib/supabaseClient";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [fullName, setFullName] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
@@ -29,6 +32,12 @@ export default function ProfilePage() {
       }
     });
   }, []);
+
+  async function handleSignOut() {
+    setSigningOut(true);
+    await supabase.auth.signOut();
+    router.push("/login");
+  }
 
   return (
     <AppShell>
@@ -63,6 +72,16 @@ export default function ProfilePage() {
             </Button>
           </Card>
         )}
+
+        <Card>
+          <CardTitle>Session</CardTitle>
+          <p className="mt-2 text-sm text-ink/60">
+            Vous êtes connecté(e). Déconnectez-vous pour fermer la session en cours.
+          </p>
+          <Button variant="danger" className="mt-3" disabled={signingOut} onClick={handleSignOut}>
+            <LogOut className="h-4 w-4" /> {signingOut ? "Déconnexion..." : "Se déconnecter"}
+          </Button>
+        </Card>
       </div>
     </AppShell>
   );

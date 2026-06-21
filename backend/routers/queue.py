@@ -8,9 +8,12 @@ from fastapi import APIRouter, HTTPException
 
 from agents.triage_agent import evaluate_priority
 from db.database import get_supabase
-from models.schemas import CheckInRequest, PatientContext, QueueEntryOut, TriageResult
+from models.schemas import CheckInRequest, PatientContext, QueueAlertOut, QueueEntryOut, TriageResult
 
 router = APIRouter(prefix="/queue", tags=["queue"])
+
+# Seuil au-delà duquel un patient en attente déclenche une alerte côté réception.
+LONG_WAIT_THRESHOLD_MINUTES = 30
 
 
 @router.get("", response_model=list[QueueEntryOut])
@@ -39,6 +42,40 @@ def list_queue():
         )
         for row in rows
     ]
+
+
+@router.get("/alerts", response_model=list[QueueAlertOut])
+def list_long_wait_alerts():
+    """Renvoie les patients toujours en attente depuis plus de
+    LONG_WAIT_THRESHOLD_MINUTES — pensé pour être interrogé périodiquement
+    par le frontend afin d'alerter la réception qu'un patient a été oublié,
+    indépendamment de sa priorité initiale."""
+    sb = get_supabase()
+    rows = (
+        sb.table("queue_entries")
+        .select("*, patients(profiles(full_name))")
+        .eq("status", "waiting")
+        .execute()
+        .data
+    )
+
+    now = datetime.now(timezone.utc)
+    alerts: list[QueueAlertOut] = []
+    for row in rows:
+        arrival = datetime.fromisoformat(row["arrival_time"].replace("Z", "+00:00"))
+        wait_minutes = int((now - arrival).total_seconds() / 60)
+        if wait_minutes >= LONG_WAIT_THRESHOLD_MINUTES:
+            alerts.append(
+                QueueAlertOut(
+                    entry_id=row["id"],
+                    patient_id=row["patient_id"],
+                    patient_name=row.get("patients", {}).get("profiles", {}).get("full_name", "Inconnu"),
+                    priority=row["priority"],
+                    wait_minutes=wait_minutes,
+                    arrival_time=row["arrival_time"],
+                )
+            )
+    return sorted(alerts, key=lambda a: a.wait_minutes, reverse=True)
 
 
 @router.post("/checkin", response_model=TriageResult)

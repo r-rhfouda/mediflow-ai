@@ -1,27 +1,28 @@
 import type { Config } from "tailwindcss";
 
-// Palette inspirée des codes couleur réels utilisés en triage d'urgence
-// (ESI — Emergency Severity Index) : chaque niveau de priorité a une
-// couleur dédiée, cohérente avec ce que connaissent déjà les pros de santé.
+// Palette rose/pastel — douce et accueillante en surface, tout en gardant
+// les couleurs de priorité distinctes et contrastées (inspirées du triage
+// d'urgence réel, échelle ESI) pour que la lisibilité clinique de la file
+// d'attente ne soit jamais sacrifiée à l'esthétique.
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        canvas: "#F7F7F4",
-        ink: "#161B22",
+        canvas: "#FDF2F6",
+        ink: "#3B2832",
         surface: "#FFFFFF",
-        line: "#E2E4E1",
+        line: "#F3D9E4",
         brand: {
-          DEFAULT: "#0E6B5C",
-          deep: "#0A4A40",
-          light: "#E4F0EC",
+          DEFAULT: "#D6608C",
+          deep: "#A8456B",
+          light: "#FBE6EF",
         },
         priority: {
           urgence: "#C0152F",
-          grossesse: "#6D28D9",
-          senior: "#B45309",
-          normal: "#0E6B5C",
+          grossesse: "#8B5CF6",
+          senior: "#C2780A",
+          normal: "#D6608C",
         },
       },
       fontFamily: {

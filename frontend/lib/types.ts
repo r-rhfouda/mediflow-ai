@@ -60,4 +60,7 @@ export interface InsightsOut {
   top_medications: Record<string, number>;
   priority_distribution: Record<string, number>;
   no_show_rate: number;
+  avg_consultation_duration_minutes: number | null;
+  ai_summary_edit_rate: number;
+  hourly_distribution: Record<string, number>;
 }

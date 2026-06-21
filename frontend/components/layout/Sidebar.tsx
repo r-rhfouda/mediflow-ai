@@ -3,13 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
-import { Activity, BarChart3, CalendarDays, ListOrdered, UserCircle } from "lucide-react";
+import { Activity, BarChart3, BellRing, CalendarDays, ListOrdered, TrendingUp, UserCircle } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/queue", label: "File d'attente", icon: ListOrdered },
+  { href: "/notifications", label: "Notifications", icon: BellRing },
   { href: "/appointments", label: "Rendez-vous", icon: CalendarDays },
   { href: "/profile", label: "Profil", icon: UserCircle },
-  { href: "/admin", label: "Admin", icon: BarChart3 },
+  { href: "/admin/daily", label: "Dashboard — Jour", icon: BarChart3 },
+  { href: "/admin/monthly", label: "Dashboard — Mois", icon: TrendingUp },
+  { href: "/admin/overview", label: "Dashboard — Global", icon: Activity },
 ];
 
 export function Sidebar() {
