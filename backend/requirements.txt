@@ -20,8 +20,7 @@ google-auth-oauthlib==1.2.1
 google-api-python-client==2.149.0
 
 # BI / agrégations (insights_agent)
-pandas==2.2.3
-
+pandas>=2.2.3
 # Transcription audio — 100% local et gratuit (aucune clé API)
 faster-whisper==1.0.3
 

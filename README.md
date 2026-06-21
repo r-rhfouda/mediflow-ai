@@ -2,7 +2,7 @@
 
 **Système de gestion de cabinet médical augmenté par des agents IA** — rendez-vous, file d'attente priorisée, transcription & résumé automatique des consultations, dossier patient centralisé, et tableau de bord BI pour l'administration.
 
-> Projet de fin d'année — BI&A · Équipe de 2 · Durée : 2 semaines
+> Projet de fin d'année — BI&A · Équipe de 2 ·
 
 ---
 
